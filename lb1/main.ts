@@ -1,0 +1,36 @@
+import * as readline from 'readline';
+import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alghoritm';
+async function main() {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+    });
+
+    const operationCounter = { value: 0 };
+    const gridSize: number = await new Promise((resolve) => {
+        rl.question("Enter grid size: ", (answer) => {
+            resolve(parseInt(answer, 10));
+        });
+    });
+
+    const squareSize = { value: 0 };
+    const newGridSize = findMaxSquareSize(gridSize, squareSize);
+    const bestCount = { value: 2 * newGridSize + 1 };
+    let squares = initializeInitialSquares(newGridSize);
+    const bestSolution: Square[] = [];
+    const initialOccupiedArea = Math.pow(Math.floor((newGridSize + 1) / 2), 2) + 2 * Math.pow(Math.floor(newGridSize / 2), 2);
+    const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
+
+    backtrack(squares, initialOccupiedArea, 3, startX, startY, newGridSize, bestCount, bestSolution, operationCounter);
+
+    console.log("Final result:");
+    console.log(`Operation count: ${operationCounter.value}`);
+    console.log(`Best count: ${bestCount.value}`);
+    for (const square of bestSolution) {
+        console.log(`${1 + square.x * squareSize.value} ${1 + square.y * squareSize.value} ${square.size * squareSize.value}`);
+    }
+
+    rl.close();
+}
+
+main();

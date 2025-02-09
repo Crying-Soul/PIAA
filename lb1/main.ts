@@ -22,8 +22,8 @@ async function main() {
     const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
 
     backtrack(squares, initialOccupiedArea, 3, startX, startY, newGridSize, bestCount, bestSolution, operationCounter);
-
-    console.log("Final result:");
+    
+    console.log(`Grid size: ${gridSize}`);
     console.log(`Operation count: ${operationCounter.value}`);
     console.log(`Best count: ${bestCount.value}`);
     for (const square of bestSolution) {

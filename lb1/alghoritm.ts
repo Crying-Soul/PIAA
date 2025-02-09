@@ -1,15 +1,24 @@
 export class Square {
+    public readonly right: number;
+    public readonly bottom: number;
+
     constructor(
         public readonly x: number,
         public readonly y: number,
         public readonly size: number
-    ) { }
+    ) {
+        this.right = x + size;
+        this.bottom = y + size;
+    }
 }
 
 export function isOverlapping(squares: Square[], x: number, y: number): boolean {
-    return squares.some(({ x: sx, y: sy, size }) =>
-        x >= sx && x < sx + size && y >= sy && y < sy + size
-    );
+    for (const square of squares) {
+        if (x >= square.x && x < square.right && y >= square.y && y < square.bottom) {
+            return true;
+        }
+    }
+    return false;
 }
 
 export function backtrack(
@@ -39,26 +48,44 @@ export function backtrack(
             if (isOverlapping(squares, x, y)) continue;
 
             let maxSize = Math.min(gridSize - x, gridSize - y);
-            for (const { x: sx, y: sy, size } of squares) {
-                if (sx + size > x && sy > y) maxSize = Math.min(maxSize, sy - y);
+
+            for (const square of squares) {
+                if (square.right > x && square.y > y) {
+                    maxSize = Math.min(maxSize, square.y - y);
+                } else if (square.bottom > y && square.x > x) {
+                    maxSize = Math.min(maxSize, square.x - x);
+                }
             }
+
+            if (maxSize <= 0) continue;
 
             for (let size = maxSize; size >= 1; size--) {
                 const newSquare = new Square(x, y, size);
                 const newOccupiedArea = occupiedArea + size * size;
 
+                const remainingArea = gridSize * gridSize - newOccupiedArea;
+                if (remainingArea > 0) {
+                    const maxPossibleSize = Math.min(gridSize - x, gridSize - y);
+                    const minSquaresNeeded = Math.ceil(remainingArea / (maxPossibleSize * maxPossibleSize));
+                    if (currentCount + 1 + minSquaresNeeded >= bestCount.value) {
+                        continue;
+                    }
+                }
+
+                squares.push(newSquare);
                 if (newOccupiedArea === gridSize * gridSize) {
                     if (currentCount + 1 < bestCount.value) {
                         bestCount.value = currentCount + 1;
                         bestSolution.length = 0;
-                        bestSolution.push(...squares, newSquare);
+                        bestSolution.push(...squares);
                     }
-                    return;
+                    squares.pop();
+                    continue;
                 }
 
                 if (currentCount + 1 < bestCount.value) {
                     backtrack(
-                        [...squares, newSquare],
+                        squares,
                         newOccupiedArea,
                         currentCount + 1,
                         x,
@@ -69,6 +96,7 @@ export function backtrack(
                         operationCounter
                     );
                 }
+                squares.pop();
             }
             return;
         }
@@ -87,9 +115,12 @@ export function initializeInitialSquares(gridSize: number): Square[] {
 }
 
 export function findMaxSquareSize(gridSize: number, squareSize: { value: number }): number {
-    let maxDivisor = 2;
-    for (let i = 1; i <= gridSize / 2; i++) {
-        if (gridSize % i === 0) maxDivisor = i;
+    let maxDivisor = 1;
+    for (let i = Math.floor(gridSize / 2); i >= 1; i--) {
+        if (gridSize % i === 0) {
+            maxDivisor = i;
+            break;
+        }
     }
     squareSize.value = maxDivisor;
     return gridSize / maxDivisor;

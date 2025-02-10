@@ -1,4 +1,4 @@
-import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alghoritm';
+import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alg-fast';
 import { createChart } from './charts';
 
 async function researchOperations() {

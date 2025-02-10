@@ -22,7 +22,6 @@ async function main() {
     const bestSolution: Square[] = [];
     const initialOccupiedArea = Math.pow(Math.floor((newGridSize + 1) / 2), 2) + 2 * Math.pow(Math.floor(newGridSize / 2), 2);
     const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
-
     backtrack(squares, initialOccupiedArea, 3, startX, startY, newGridSize, bestCount, bestSolution, operationCounter);
 
     console.log(`Grid size: ${gridSize}`);

@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks';
-import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alghoritm';
+import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alg-fast';
 import chalk from 'chalk'; // Для цветного вывода в консоль
 import Table from 'cli-table3'; // Для красивых таблиц
 

@@ -1,9 +1,10 @@
 import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alghoritm';
-
+import { createChart } from './charts';
 
 async function researchOperations() {
     const operationCounter = { value: 0 };
-    const gridSizes = [4, 5, 6, 7, 8, 9, 10, 13, 15, 19, 20]; // Пример размеров сетки для исследования
+    const gridSizes = Array.from({ length: 57 }, (_, i) => i + 4);
+    const results: { n: number, operations: number }[] = []; // Массив для хранения результатов
 
     for (const gridSize of gridSizes) {
         const squareSize = { value: 0 };
@@ -25,7 +26,13 @@ async function researchOperations() {
             console.log(`${1 + square.x * squareSize.value} ${1 + square.y * squareSize.value} ${square.size * squareSize.value}`);
         }
         console.log('-----------------------------');
+
+        // Сохраняем результаты для построения графика
+        results.push({ n: gridSize, operations: operationCounter.value });
     }
+
+    // Строим график на основе результатов
+    createChart(results);
 }
 
 researchOperations();

@@ -44,7 +44,7 @@ function benchmarkAlgorithm(n: number, runs: number = 5): { avgTime: number; bes
 
 // Основная функция для тестирования
 function runBenchmark() {
-    const testCases = [4, 5, 6, 7, 8, 9, 10, 15, 19, 20]; 
+    const testCases = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 19, 20, 29, 31, 37, 41, 53];
 
     console.log(chalk.bold.blue('Benchmarking algorithm...\n'));
 
@@ -66,7 +66,7 @@ function runBenchmark() {
         const { avgTime, bestCount, operations, avgMemoryUsage } = benchmarkAlgorithm(n);
         table.push([
             chalk.yellow(n),
-            chalk.cyan(avgTime.toFixed(2)),
+            chalk.cyan(avgTime.toFixed(4)),
             chalk.magenta(bestCount.toString()),
             chalk.white(operations.toFixed(0)),
             chalk.yellow(avgMemoryUsage.toFixed(0))

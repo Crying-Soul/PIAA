@@ -1,5 +1,7 @@
 import * as readline from 'readline';
 import { Square, backtrack, initializeInitialSquares, findMaxSquareSize } from './alghoritm';
+import { visualizeGrid } from './visualization';
+
 async function main() {
     const rl = readline.createInterface({
         input: process.stdin,
@@ -22,14 +24,14 @@ async function main() {
     const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
 
     backtrack(squares, initialOccupiedArea, 3, startX, startY, newGridSize, bestCount, bestSolution, operationCounter);
-    
+
     console.log(`Grid size: ${gridSize}`);
     console.log(`Operation count: ${operationCounter.value}`);
     console.log(`Best count: ${bestCount.value}`);
     for (const square of bestSolution) {
         console.log(`${1 + square.x * squareSize.value} ${1 + square.y * squareSize.value} ${square.size * squareSize.value}`);
     }
-
+    visualizeGrid(newGridSize, bestSolution);
     rl.close();
 }
 

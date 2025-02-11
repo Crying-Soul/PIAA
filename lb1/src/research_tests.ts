@@ -3,7 +3,7 @@ import { createChart } from './charts';
 
 async function researchOperations() {
     const operationCounter = { value: 0 };
-    const gridSizes = Array.from({ length: 57 }, (_, i) => i + 4);
+    const gridSizes = [5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59];
     const results: { n: number, operations: number }[] = []; // Массив для хранения результатов
 
     for (const gridSize of gridSizes) {
@@ -12,8 +12,8 @@ async function researchOperations() {
         const bestCount = { value: 2 * newGridSize + 1 };
         let squares = initializeInitialSquares(newGridSize);
         const bestSolution: Square[] = [];
-        const initialOccupiedArea = Math.pow(Math.floor((newGridSize + 1) / 2), 2) + 2 * Math.pow(Math.floor(newGridSize / 2), 2);
-        const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
+        const initialOccupiedArea = squares[0].size ** 2 + 2 * squares[1].size ** 2;
+        const startX = squares[2].bottom, startY = squares[2].x;    
 
         operationCounter.value = 0; // Сброс счетчика операций для каждого размера сетки
 

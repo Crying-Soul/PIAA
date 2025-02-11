@@ -10,7 +10,7 @@ async function main() {
 
     const operationCounter = { value: 0 };
     const gridSize: number = await new Promise((resolve) => {
-        rl.question("Enter grid size: ", (answer) => {
+        rl.question("Enter grid size: ", (answer: string) => {
             resolve(parseInt(answer, 10));
         });
     });
@@ -20,8 +20,8 @@ async function main() {
     const bestCount = { value: 2 * newGridSize + 1 };
     let squares = initializeInitialSquares(newGridSize);
     const bestSolution: Square[] = [];
-    const initialOccupiedArea = Math.pow(Math.floor((newGridSize + 1) / 2), 2) + 2 * Math.pow(Math.floor(newGridSize / 2), 2);
-    const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
+    const initialOccupiedArea = squares[0].size ** 2 + 2 * squares[1].size ** 2;
+    const startX = squares[2].bottom, startY = squares[2].x;   
     backtrack(squares, initialOccupiedArea, 3, startX, startY, newGridSize, bestCount, bestSolution, operationCounter);
 
     console.log(`Grid size: ${gridSize}`);

@@ -17,9 +17,9 @@ function benchmarkAlgorithm(n: number, runs: number = 5): { avgTime: number; bes
         const currentBestCount = { value: 2 * newGridSize + 1 };
         const squares = initializeInitialSquares(newGridSize);
         const bestSolution: Square[] = [];
-        const initialOccupiedArea = Math.pow(Math.floor((newGridSize + 1) / 2), 2) + 2 * Math.pow(Math.floor(newGridSize / 2), 2);
-        const startX = Math.floor(newGridSize / 2), startY = Math.floor((newGridSize + 1) / 2);
-
+        const initialOccupiedArea = squares[0].size ** 2 + 2 * squares[1].size ** 2;
+        const startX = squares[2].bottom, startY = squares[2].x;    
+        
         const startTime = performance.now();
         const startMemoryUsage = process.memoryUsage().heapUsed;
         backtrack(squares, initialOccupiedArea, 3, startX, startY, newGridSize, currentBestCount, bestSolution, operationCounter);
@@ -44,7 +44,7 @@ function benchmarkAlgorithm(n: number, runs: number = 5): { avgTime: number; bes
 
 // Основная функция для тестирования
 function runBenchmark() {
-    const testCases = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 19, 20, 29, 31, 37, 41, 53];
+    const testCases = Array.from({ length: 57 }, (_, i) => i + 4);
 
     console.log(chalk.bold.blue('Benchmarking algorithm...\n'));
 

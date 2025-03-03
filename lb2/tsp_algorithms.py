@@ -87,18 +87,7 @@ def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, sel
         remaining_cities = set(range(num_cities)) - visited - {next_city}
         mst_estimate = minimum_spanning_tree(reduced_matrix, remaining_cities) if remaining_cities else 0
 
-        min_edges = []
-        for i in remaining_cities:
-            row = reduced_matrix[i]
-            finite_edges = row[row != INF]
-            if finite_edges.size > 0:
-                min_edges.append(np.min(finite_edges))
-        if len(min_edges) >= 2:
-            min_edges_sum = sum(sorted(min_edges)[:2])
-        elif len(min_edges) == 1:
-            min_edges_sum = min_edges[0]
-        else:
-            min_edges_sum = 0
+        min_edges_sum = sum(sorted([min(row[row != INF]) for i, row in enumerate(reduced_matrix) if i in remaining_cities])[:2])
 
         lower_bound = new_cost + min(mst_estimate, min_edges_sum)
 

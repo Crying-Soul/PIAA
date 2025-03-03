@@ -5,14 +5,25 @@ from tsp_algorithms import solve_tsp
 from utils import generate_matrix
 
 def benchmark_tsp(matrix_sizes, runs=5):
-    """Запускает тестирование методов решения задачи коммивояжера для матриц разного размера и строит таблицу результатов."""
+    """Запускает тестирование методов решения задачи коммивояжера для матриц разного размера и строит таблицу результатов.
+    
+    Аргументы:
+    matrix_sizes -- список размеров матриц для тестирования (list[int])
+    runs -- количество запусков для каждого размера матрицы (int, по умолчанию 5)
+    
+    Действия:
+    1. Для каждого размера матрицы генерируется случайная матрица.
+    2. Для каждого метода ('little' и 'nearest') вычисляется средняя стоимость пути и время выполнения.
+    3. Результаты выводятся в виде таблицы.
+    4. Строится график зависимости времени выполнения от размера матрицы для обоих методов.
+    """
     methods = ['little', 'nearest']
     results = []
     little_times = []
     nearest_times = []
     
     for size in matrix_sizes:
-        matrix = generate_matrix(size)
+        matrix = generate_matrix(size, seed=99)
         matrix_np = np.array(matrix)
         row = [size]
         
@@ -63,4 +74,4 @@ def benchmark_tsp(matrix_sizes, runs=5):
     plt.show()
 
 if __name__ == '__main__':
-    benchmark_tsp([i for i in range(4, 20)])
+    benchmark_tsp([i for i in range(4, 19)])

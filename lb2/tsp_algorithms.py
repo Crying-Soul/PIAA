@@ -2,9 +2,17 @@ import heapq
 import numpy as np
 from math import inf
 
-
-
 def reduce_cost_matrix(matrix, verbose=False):
+    """Редуцирует матрицу затрат, вычитая минимальные значения строк и столбцов.
+    
+    Аргументы:
+    matrix -- матрица затрат (numpy.ndarray)
+    verbose -- флаг для вывода промежуточных результатов (bool, по умолчанию False)
+    
+    Возвращает:
+    reduced_matrix -- редуцированная матрица (numpy.ndarray)
+    total_reduction -- сумма всех вычтенных минимумов (float)
+    """
     reduced_matrix = matrix.copy()
     row_min = np.min(reduced_matrix, axis=1)
     row_min[np.isinf(row_min)] = 0
@@ -23,6 +31,16 @@ def reduce_cost_matrix(matrix, verbose=False):
     return reduced_matrix, np.sum(row_min) + np.sum(col_min)
 
 def minimum_spanning_tree(matrix, vertices, verbose=False):
+    """Вычисляет минимальное остовное дерево (MST) для заданного множества вершин.
+    
+    Аргументы:
+    matrix -- матрица затрат (numpy.ndarray)
+    vertices -- множество вершин (set)
+    verbose -- флаг для вывода промежуточных результатов (bool, по умолчанию False)
+    
+    Возвращает:
+    total_cost -- стоимость минимального остовного дерева (float)
+    """
     if len(vertices) <= 1:
         return 0.0
     total_cost = 0.0
@@ -52,6 +70,18 @@ def minimum_spanning_tree(matrix, vertices, verbose=False):
     return total_cost if len(visited) == len(vertices) else inf
 
 def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, selected_edges, verbose=False):
+    """Рекурсивно выполняет метод ветвей и границ для задачи коммивояжера.
+    
+    Аргументы:
+    matrix -- матрица затрат (numpy.ndarray)
+    current -- текущий город (int)
+    visited -- множество посещенных городов (set)
+    current_cost -- текущая стоимость пути (float)
+    path -- текущий путь (list)
+    best -- лучший найденный путь и его стоимость (dict)
+    selected_edges -- выбранные ребра (dict)
+    verbose -- флаг для вывода промежуточных результатов (bool, по умолчанию False)
+    """
     num_cities = len(matrix)
     
     if len(visited) == num_cities:
@@ -100,6 +130,15 @@ def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, sel
             tsp_branch_and_bound(reduced_matrix, next_city, visited | {next_city}, new_cost, path + [next_city], best, selected_edges.copy(), verbose)
 
 def tsp_little_algorithm(matrix, verbose=False):
+    """Решает задачу коммивояжера с использованием алгоритма Литтла.
+    
+    Аргументы:
+    matrix -- матрица затрат (numpy.ndarray)
+    verbose -- флаг для вывода промежуточных результатов (bool, по умолчанию False)
+    
+    Возвращает:
+    best_solution -- лучший найденный путь и его стоимость (dict)
+    """
     if verbose:
         print("🚀 Запуск алгоритма Литтла...")
     best_solution = {'cost': inf, 'path': []}
@@ -108,6 +147,15 @@ def tsp_little_algorithm(matrix, verbose=False):
     return best_solution
 
 def tsp_nearest_neighbor(matrix, verbose=False):
+    """Решает задачу коммивояжера с использованием алгоритма ближайшего соседа.
+    
+    Аргументы:
+    matrix -- матрица затрат (numpy.ndarray)
+    verbose -- флаг для вывода промежуточных результатов (bool, по умолчанию False)
+    
+    Возвращает:
+    solution -- найденный путь и его стоимость (dict)
+    """
     num_cities = len(matrix)
     visited = {0}
     path = [0]
@@ -130,4 +178,14 @@ def tsp_nearest_neighbor(matrix, verbose=False):
     return {'cost': total_cost, 'path': path}
 
 def solve_tsp(matrix, method='little', verbose=False):
+    """Решает задачу коммивояжера выбранным методом.
+    
+    Аргументы:
+    matrix -- матрица затрат (numpy.ndarray)
+    method -- метод решения ('little' или 'nearest_neighbor') (str, по умолчанию 'little')
+    verbose -- флаг для вывода промежуточных результатов (bool, по умолчанию False)
+    
+    Возвращает:
+    solution -- найденный путь и его стоимость (dict)
+    """
     return tsp_little_algorithm(matrix, verbose) if method == 'little' else tsp_nearest_neighbor(matrix, verbose)

@@ -7,7 +7,7 @@ import cProfile
 if __name__ == '__main__':
     matrix = generate_matrix(size=15, seed=99)
     print_matrix(matrix)
-    export_matrix(matrix, file_type='csv')
+    export_matrix(matrix, file_type='txt')
     verbose = False  
 
     for method in ['little', 'nearest']:

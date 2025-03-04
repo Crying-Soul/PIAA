@@ -1,12 +1,14 @@
 import time
 from tsp_algorithms import solve_tsp
-from utils import generate_matrix, print_matrix, print_solution, export_matrix
+from utils import generate_matrix, print_matrix, print_solution, export_matrix, load_matrix
 
 
 if __name__ == '__main__':
-    matrix = generate_matrix(size=20, seed=52)
-    # print_matrix(matrix)
-    # export_matrix(matrix, file_type='txt')
+    matrix = generate_matrix(size=10, seed=52, symmetric=True)
+    print_matrix(matrix)
+    # export_matrix(matrix, 'matrix', file_type='csv')
+    # matrix = load_matrix('matrix', 'csv')
+
     verbose = False  
 
     for method in ['little', 'nearest']:

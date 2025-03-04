@@ -4,12 +4,12 @@ from utils import generate_matrix, print_matrix, print_solution, export_matrix, 
 
 
 if __name__ == '__main__':
-    matrix = generate_matrix(size=10, seed=52, symmetric=True)
+    matrix = generate_matrix(size=5, seed=52, symmetric=False)
     print_matrix(matrix)
     # export_matrix(matrix, 'matrix', file_type='csv')
     # matrix = load_matrix('matrix', 'csv')
 
-    verbose = False  
+    verbose = True  
 
     for method in ['little', 'nearest']:
         start_time = time.time()

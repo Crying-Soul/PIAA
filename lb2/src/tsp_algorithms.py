@@ -26,7 +26,9 @@ def reduce_cost_matrix(matrix, verbose=False):
         print("=== Редукция матрицы ===")
         print(f"Минимумы строк: {row_min}")
         print(f"Минимумы столбцов: {col_min}")
+        print(f"Нижняя граница: {np.sum(row_min) + np.sum(col_min)}")
         print(f"Редуцированная матрица:\n{reduced_matrix}")
+        
     
     return reduced_matrix, np.sum(row_min) + np.sum(col_min)
 
@@ -69,7 +71,7 @@ def minimum_spanning_tree(matrix, vertices, verbose=False):
     
     return total_cost if len(visited) == len(vertices) else inf
 
-def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, selected_edges, verbose=False):
+def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, selected_edges, verbose=False, depth=0):
     """
     Рекурсивно решает задачу коммивояжера методом ветвей и границ.
     
@@ -81,6 +83,7 @@ def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, sel
     best -- словарь с лучшей найденной стоимостью и путём: {'cost': float, 'path': list}
     selected_edges -- выбранные ребра для предотвращения циклов (dict)
     verbose -- флаг для вывода промежуточных результатов (bool)
+    depth -- глубина рекурсии (int, по умолчанию 0)
     """
     num_cities = len(matrix)
 
@@ -94,28 +97,30 @@ def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, sel
             best['cost'] = total_cost
             best['path'] = path + [0]
         if verbose:
-            print(f"✅ Найден полный путь {path + [0]} с общей стоимостью {total_cost}")
+            print(f"Глубина={depth} ✅ Найден полный путь {path + [0]} с общей стоимостью {total_cost}")
         return
 
     # Формируем список кандидатов с сортировкой по стоимости перехода
     candidates = sorted(
         [city for city in range(num_cities) 
-         if city not in visited and matrix[current][city] != float('inf')],
+         if city not in visited and matrix[current][city] != inf],
         key=lambda city: matrix[current][city]
     )
+    if verbose:
+        print(f"Глубина={depth}  Рассматриваем кандидатов из города {current}: {candidates}")
 
     for next_city in candidates:
         cost_to_next = matrix[current][next_city]
 
         # Создаем новую матрицу и модифицируем её для текущего перехода
         new_matrix = matrix.copy()
-        new_matrix[current, :] = float('inf')
-        new_matrix[:, next_city] = float('inf')
+        new_matrix[current, :] = inf
+        new_matrix[:, next_city] = inf
         if len(visited) + 1 < num_cities:
-            new_matrix[next_city][0] = float('inf')
+            new_matrix[next_city][0] = inf
         if current in selected_edges:
             prev_city = selected_edges[current]
-            new_matrix[next_city][prev_city] = float('inf')
+            new_matrix[next_city][prev_city] = inf
 
         # Копируем словарь выбранных ребер и обновляем его для текущего перехода
         new_selected_edges = selected_edges.copy()
@@ -135,14 +140,15 @@ def tsp_branch_and_bound(matrix, current, visited, current_cost, path, best, sel
         lower_bound = new_cost + min(mst_estimate, min_edges_sum)
 
         if verbose:
-            print(f"🔍 Рассматриваем путь {path + [next_city]} (стоимость: {new_cost}, нижняя граница: {lower_bound})")
+            print(f"Глубина={depth} 🔍 Рассматриваем путь {path + [next_city]} (стоимость: {new_cost}, нижняя граница: {lower_bound})")
 
         # Продолжаем рекурсию только если нижняя граница ниже текущего лучшего результата
         if lower_bound < best['cost']:
             tsp_branch_and_bound(
                 reduced_matrix, next_city, visited | {next_city}, new_cost,
-                path + [next_city], best, new_selected_edges, verbose
+                path + [next_city], best, new_selected_edges, verbose, depth + 1
             )
+
 
 def tsp_little_algorithm(matrix, verbose=False):
     """

@@ -133,7 +133,7 @@ class AhoCorasick:
                     break
                 temp = temp.suffix_link
 
-    def search(self, text, pattern_input, joker):
+    def search(self, text, pattern_input, joker, ban_symbol):
         if self.verbose:
             log_section(f"Поиск по тексту: {text}")
         result = [0] * len(text)
@@ -162,25 +162,35 @@ class AhoCorasick:
                             result[pos] += 1
                             if self.verbose:
                                 log_success(
-                                    f"[ПОИСК] Подшаблон '{matched}' найден в позиции {pos+1} (узел: '{temp.name}')"
+                                    f"[ПОИСК] Подшаблон '{matched}' найден в позиции {pos + 1} (узел: '{temp.name}')"
                                 )
                 temp = temp.terminal_link
 
-        # Формируем выходной результат
         output = []
         total_patterns = sum(len(v) for v in self.patterns.values())
         for i in range(len(result) - len(pattern_input) + 1):
-            if result[i] == total_patterns:
-                valid = True
-                for j in range(len(pattern_input)):
-                    if pattern_input[j] == joker and text[i + j] == joker:
+            if result[i] != total_patterns:
+                continue
+
+            valid = True
+            for j, pch in enumerate(pattern_input):
+                tch = text[i + j]
+                if pch == joker:
+                    if tch == ban_symbol:
                         valid = False
                         break
-                if valid:
-                    output.append(i + 1)
+                else:
+                    if pch != tch:
+                        valid = False
+                        break
+
+            if valid:
+                output.append(i + 1)
+
         if self.verbose:
             log_result(f"Всего совпадений: {len(output)}")
         return [str(pos) for pos in output]
+
 
 
 def get_pattern_parts(pattern, joker, verbose=False):
@@ -210,7 +220,7 @@ def get_pattern_parts(pattern, joker, verbose=False):
 
 
 def main():
-    verbose = True
+    verbose = False
     text = input().strip()
     pattern_input = input().strip()
     joker = input().strip()
@@ -222,7 +232,7 @@ def main():
         return
 
     automaton = AhoCorasick(patterns, verbose)
-    result = automaton.search(text, pattern_input, joker)
+    result = automaton.search(text, pattern_input, joker, ban_symbol="~")
 
     if result:
         if verbose:
